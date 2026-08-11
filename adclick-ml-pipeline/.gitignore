@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+data/raw/
+data/features/
+models/*.joblib
+models/*.pt
+models/*_metrics.json
+models/kmeans_model/
+models/kmeans_segments.parquet/
+.pytest_cache/
+*.egg-info/
+.DS_Store
