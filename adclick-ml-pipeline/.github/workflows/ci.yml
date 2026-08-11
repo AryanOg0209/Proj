@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main, "claude/**"]
+    paths:
+      - "adclick-ml-pipeline/**"
+  pull_request:
+    paths:
+      - "adclick-ml-pipeline/**"
+
+defaults:
+  run:
+    working-directory: adclick-ml-pipeline
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Set up JDK (required by PySpark)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run tests
+        run: pytest -v
+
+      - name: Smoke-test data generation
+        run: python data/generate_data.py --rows 2000 --out data/raw/impressions.csv
+
+      - name: Smoke-test Spark ETL
+        run: python -m src.etl.spark_pipeline --input data/raw/impressions.csv --output data/features

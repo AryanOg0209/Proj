@@ -1,0 +1,9 @@
+services:
+  ctr-api:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./models:/app/models:ro
+    environment:
+      - CTR_MODEL_PATH=models/ctr_model.joblib
